@@ -20,12 +20,13 @@ public class NoteEventListener {
 
     @RabbitListener(queues = NOTES_CREATED_QUEUE)
     public void sendNoteCreatedEmail(@Header(name = "username") String username, @Header(name = "email") String email, @Payload String content){
+        log.info("Received create message: " + content);
         sendEventMail(email, content, "Note Created");
     }
 
     private void sendEventMail(String email, String content, String subject) {
+        log.info("Sending email: '" + email + "' "+ subject);
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("noreply@notebook.com");
         message.setTo(email);
         message.setSubject(subject);
         message.setText(content);
@@ -34,11 +35,13 @@ public class NoteEventListener {
 
     @RabbitListener(queues = NOTES_UPDATED_QUEUE)
     public void sendNoteUpdatedEmail(@Header(name = "username") String username, @Header(name = "email") String email, @Payload String content){
+        log.info("Received update message: " + content);
         sendEventMail(email, content, "Note Updated");
     }
 
     @RabbitListener(queues = NOTES_DELETED_QUEUE)
     public void sendNoteDeletedEmail(@Header(name = "username") String username, @Header(name = "email") String email, @Payload String content){
+        log.info("Received delete message: " + content);
         sendEventMail(email, content, "Note Deleted");
     }
 }
